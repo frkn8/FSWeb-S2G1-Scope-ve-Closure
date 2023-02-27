@@ -53,8 +53,24 @@ function skor2() {
   return skor++;
 }
 
+/*
+1. skor1 ve skor2 arasındaki fark nedir? 
+skor1'e sadece skorGuncelle() fonksiyonun içinde erişilebilir,fonksiyonun dışında kullanılamaz; 
+skor2'ye ise kodun herhangi bir yerinden erişilebilir ve değiştirilebilir,global bir skor değişkeni kullanır.
+
+2. Hangisi bir closure kullanmaktadır? Nasıl tarif edebilirsin?
+skor1 bir closure kullanır. Closure, bir iç fonksiyonun, dışarıda tanımlanmış bir değişkene veya fonksiyona erişmesini sağlayan bir yapıdır. 
+Bu durumda skorArtirici fonksiyonu içinde tanımlanan skor değişkeni, skorGuncelle fonksiyonu tarafından kullanılabilir. Bu nedenle, skor1 bir closure kullanır.
+
+3. Hangi durumda skor1 tercih edilebilir? Hangi durumda skor2 daha mantıklıdır?
+skor1, yalnızca belirli bir işlev aracılığıyla erişilebilen ve değiştirilebilen özel bir değişkeni korumamız gerektiğinde tercih edilebilir, 
+farklı bölümlerde değişkenin istenmeden değiştirilmesini önlemeye yardımcı olur. skor2, birden fazla fonksiyondan erişilebilen ve değiştirilebilen 
+global bir değişkene ihtiyacımız olduğunda kullanılır.
 
 /* Görev 2: takimSkoru() 
+
+
+
 Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
   1. Bir çeyrekte bir takımın ürettiği skoru rastgele(random) elde eden bir sonuc dönünüz(return)
   
@@ -145,7 +161,6 @@ function periyotSkoru(SkorPeriyot) {
   console.log(periyotSkoru(takimSkoru))
 
 
-
 /* Zorlayıcı Görev 5: skorTabelasi() 
 Aşağıdaki skorTabelasi() fonksiyonunu kullanarak aşağıdakileri yapınız:
   1. İlk parametre olarak Görev 4'te oluşturduğumuz 'periyotSkoru'nu bir değişken olarak almalı
@@ -177,9 +192,38 @@ MAÇ UZAR ise skorTabelasi(periyotSkoru,takimSkoru,4)
 ] */
 // NOTE: Bununla ilgili bir test yoktur. Eğer logladığınız sonuçlar yukarıdakine benziyor ise tmamlandı sayabilirsiniz.
 
-function skorTabelasi(/*Kodunuzu buraya yazınız*/) {
+function skorTabelasi(periodScoreCb, teamScoreCb, quarter) {
   /*Kodunuzu buraya yazınız*/
+  // Örnekten kopyala yapıştır
+  const scoreArray = [];
+  let teamScores = {
+    EvSahibi: 0,
+    KonukTakim: 0,
+  };
+  for (let i = 1; i <= quarter; i++) {
+    const periodScoreResult = periodScoreCb(teamScoreCb);
+    const hSc = periodScoreResult.EvSahibi;
+    const gSc = periodScoreResult.KonukTakim;
+    teamScores.EvSahibi = teamScores.EvSahibi + hSc;
+    teamScores.KonukTakim = teamScores.KonukTakim + gSc;
+    const scoreBacktick = `${i}. Periyot: Ev Sahibi ${hSc} - Konuk Takım ${gSc}`;
+    scoreArray.push(scoreBacktick);
+    // eğer son quarterda isek ve skorlar aynıysa
+    if (quarter == i && teamScores.EvSahibi == teamScores.KonukTakim) {
+      const periodScoreResultE = periodScoreCb(teamScoreCb);
+      const hScE = periodScoreResult.EvSahibi;
+      const gScE = periodScoreResult.KonukTakim;
+      teamScores.EvSahibi = teamScores.EvSahibi + hScE;
+      teamScores.KonukTakim = teamScores.KonukTakim + gScE;
+      scoreArray.push(`1. Uzatma: Ev Sahibi ${hScE} - Konuk Takım ${gScE}`);
+    }
+  }
+  scoreArray.push(
+    `Maç Sonucu: Ev Sahibi ${teamScores.EvSahibi} - Konuk Takım ${teamScores.KonukTakim}`
+  );
+  return [...scoreArray];
 }
+console.log("Görev 5", skorTabelasi(periyotSkoru, takimSkoru, 4));
 
 
 
